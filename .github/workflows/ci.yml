@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate PowerShell syntax
+        shell: pwsh
+        run: ./tests/Test-PowerShellSyntax.ps1
+      - name: Generate PAC
+        shell: pwsh
+        run: ./scripts/New-RoutePilotPac.ps1 -ConfigPath ./config/routepilot.example.json
+      - name: Validate rejected configurations
+        shell: pwsh
+        run: ./tests/Test-ConfigValidation.ps1
+      - name: Test PAC routing
+        shell: pwsh
+        run: node ./tests/Test-RoutingPac.js ./runtime/routepilot.pac ./config/routepilot.example.json
+      - name: Compile service host
+        shell: pwsh
+        run: ./scripts/Build-Service.ps1
+      - name: Scan tracked content
+        shell: pwsh
+        run: ./tests/Test-NoSecrets.ps1

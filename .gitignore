@@ -1,0 +1,31 @@
+# Local configuration and credentials
+config/*.local.json
+config/*.local.yaml
+config/*.local.yml
+*.local.*
+secrets/
+
+# Runtime state and generated artifacts
+runtime/
+state/
+reports/
+artifacts/
+*.log
+
+# Third-party and compiled binaries
+vendor/
+bin/
+obj/
+*.exe
+*.dll
+*.pdb
+*.key
+*.pem
+*.pfx
+*.crt
+
+# Editor and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

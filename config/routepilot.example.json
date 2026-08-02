@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "primaryProxy": {
+    "host": "127.0.0.1",
+    "port": 10809
+  },
+  "bulkProxy": {
+    "host": "127.0.0.1",
+    "port": 10818
+  },
+  "defaultDirectFallback": true,
+  "protectedDomains": [
+    "accounts.example.com",
+    "login.example.net"
+  ],
+  "bulkDomains": [
+    "media.example.com",
+    "downloads.example.net"
+  ],
+  "health": {
+    "requirePrimaryProxy": true,
+    "requireHysteriaService": true,
+    "expectedBulkExit": "",
+    "checkUrl": "https://api.ipify.org",
+    "certificatePath": ""
+  }
+}

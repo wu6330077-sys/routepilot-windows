@@ -1,0 +1,14 @@
+# Copy this file to hysteria-client.local.yaml before editing it.
+server: example.com:443
+auth: REPLACE_WITH_A_RANDOM_SECRET
+
+tls:
+  sni: example.com
+  ca: C:\Path\to\private-ca.crt
+
+http:
+  listen: 127.0.0.1:10818
+
+bandwidth:
+  up: 20 mbps
+  down: 80 mbps
