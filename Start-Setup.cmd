@@ -15,6 +15,7 @@ if not "%ROUTEPILOT_EXIT%"=="0" (
     echo Read the message above, fix the reported item, and run this file again.
 ) else (
     echo Setup finished. Restart Microsoft Edge if the policy was installed.
+    echo Open Open-Dashboard.cmd and refresh the policy status when ready.
 )
 echo.
 pause

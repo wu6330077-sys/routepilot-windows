@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented here.
 
+## [0.2.0] - 2026-08-02
+
+- Added a double-click Windows dashboard for neutral, side-by-side route testing.
+- Added read-only Edge policy and local proxy status detection.
+- Added optional per-route download benchmarks with Mbps samples and a factual speed ratio.
+- Added a machine-readable snapshot command and deterministic offline monitor tests.
+- Documented benchmark traffic usage, limitations, and a before/after demonstration workflow without classifying outcomes.
+
 ## [0.1.1] - 2026-08-02
 
 - Rewrote the English and Chinese introductions with a plain-language explanation and a concrete YouTube example.

@@ -19,7 +19,11 @@ Either clone the repository with Git or use **Code → Download ZIP** on GitHub 
 Get-ChildItem -Recurse -File | Unblock-File
 ```
 
-## Step 2: double-click the wizard
+## Step 2: open the route-test dashboard
+
+Double-click `Open-Dashboard.cmd`. Confirm that both local proxy ports are reachable. Click the benchmark button only if you want to compare the routes; its default total test traffic is about 20 MB. The dashboard presents neutral measurements and current policy state.
+
+## Step 3: double-click the wizard
 
 Double-click `Start-Setup.cmd` in the project root. It starts PowerShell in the correct folder and keeps the result visible.
 
@@ -36,17 +40,21 @@ The defaults are:
 
 Press Enter to accept a default or type your actual port. The wizard creates `config/routepilot.local.json`, which is ignored by Git.
 
-## Step 3: read the port check
+## Step 4: read the port check
 
 Both ports must show `READY`. If either shows `NOT READY`, RoutePilot deliberately does not modify Edge. Start or repair that proxy and run the wizard again.
 
 RoutePilot expects an **HTTP proxy** at both ports. A SOCKS-only port cannot be used by the generated `PROXY` PAC directive.
 
-## Step 4: install and activate Edge routing
+## Step 5: install and activate Edge routing
 
 When both ports are ready, answer `Y` when the wizard asks to install the Edge policy. Close every Edge window and start Edge again.
 
 Edge may display “Managed by your organization.” This is expected because RoutePilot uses the current user's local Edge policy. It does not join the computer to an external organization.
+
+## Step 6: refresh policy status
+
+Return to the route-test dashboard and click **Refresh policy status**. The status area should now report that Edge loaded the RoutePilot policy. Rerunning the route benchmark is optional; route speed and policy activation are separate facts.
 
 ## What is changed?
 

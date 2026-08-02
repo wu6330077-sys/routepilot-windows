@@ -135,3 +135,4 @@ if ($edgeInstalled) {
     Write-Host 'Edge policy was not installed. Run scripts\Install-EdgeRouting.ps1 later. / Edge 策略未安装，可稍后手动安装。'
 }
 Write-Host 'Rollback / 回滚: .\scripts\Restore-EdgeRouting.ps1'
+Write-Host 'Dashboard / 线路测试: .\Open-Dashboard.cmd'

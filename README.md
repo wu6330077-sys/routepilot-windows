@@ -55,6 +55,18 @@ RoutePilot is useful when you already have:
 
 It does **not** sell IP addresses, create accounts, provision a remote server, or bypass platform controls. It only coordinates network routes that you own or are authorized to use.
 
+## Test the routes visually
+
+Start both local HTTP proxies, then double-click:
+
+```text
+Open-Dashboard.cmd
+```
+
+The neutral dashboard shows whether the RoutePilot Edge policy is active, whether each local proxy is reachable, each route's measured single-connection Mbps, and the bulk-to-primary speed ratio. It does not label a result as a success or failure.
+
+No download occurs until you click the benchmark button. The default comparison downloads a 5 MB object twice through each route, for about 20 MB of total test traffic. See the [dashboard guide](docs/dashboard.md) for measurement details and limitations.
+
 ## Beginner setup: double-click one file
 
 Start both local HTTP proxies, then double-click:
@@ -78,6 +90,8 @@ The bilingual setup wizard will:
 5. offer to install the reversible Edge policy.
 
 No Node.js installation or fixed install location is required for the beginner path. Restart Edge after the wizard finishes.
+
+You can open `Open-Dashboard.cmd` before or after setup. After installing the policy, use **Refresh policy status** to read the current Edge state; rerunning the benchmark is optional.
 
 See the [beginner guide](docs/beginner-guide.md) for screenshots-in-words, checks, rollback, and common errors. If you still need to prepare a Hysteria 2 client, use the [manual installation guide](docs/manual-install.md).
 
@@ -128,6 +142,7 @@ Remove the optional Windows service while retaining diagnostic data:
 .\tests\Test-PowerShellSyntax.ps1
 .\tests\Test-ConfigValidation.ps1
 .\tests\Test-SetupWizard.ps1
+.\tests\Test-MonitorSnapshot.ps1
 .\scripts\New-RoutePilotPac.ps1 -ConfigPath .\config\routepilot.example.json
 node .\tests\Test-RoutingPac.js .\runtime\routepilot.pac .\config\routepilot.example.json
 .\scripts\Build-Service.ps1

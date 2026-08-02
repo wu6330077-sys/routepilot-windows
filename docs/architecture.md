@@ -9,7 +9,9 @@ RoutePilot separates human-readable configuration, generated routing policy, ope
 3. `New-RoutePilotPac.ps1` validates that configuration and generates `runtime/routepilot.pac`.
 4. `Install-EdgeRouting.ps1` embeds the PAC bytes in a user-level Microsoft Edge policy and saves the previous value under ignored local state.
 5. `RoutePilotService.cs` is an optional generic process supervisor. The installer configures it to run a Hysteria 2 client as `LocalService`.
-6. `Test-RoutePilotHealth.ps1` verifies local ports, service state, Edge policy integrity, certificate lifetime, and an optional expected bulk-route exit.
+6. `Get-RoutePilotSnapshot.ps1` reads Edge policy state and local proxy availability, and optionally measures each route through the configured HTTP proxy.
+7. `Show-RoutePilotDashboard.ps1` renders that read-only snapshot in a local Windows Forms interface.
+8. `Test-RoutePilotHealth.ps1` verifies local ports, service state, Edge policy integrity, certificate lifetime, and an optional expected bulk-route exit.
 
 ## Request flow
 
@@ -33,5 +35,7 @@ Keeping TCP 443 for the primary tunnel and UDP 443 for the optional bulk tunnel 
 ## Data boundaries
 
 Tracked files contain source, documentation, tests, and placeholders only. Generated PAC files, policy backups, logs, binaries, local configuration, credentials, certificates, and reports are ignored.
+
+The dashboard does not install policies or change proxy applications. Its setup button opens the separate interactive setup wizard; no routing mutation occurs inside the monitor process itself.
 
 See [Performance case study](performance-case-study.md) for measured behavior from the deployment that inspired the project.

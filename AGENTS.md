@@ -7,4 +7,5 @@
 - Hysteria downloads must come from the official GitHub release and pass the published SHA-256 check.
 - Protected-domain traffic must fail closed; do not add a `DIRECT` or bulk-proxy fallback to that route.
 - Any change to routing must pass `tests/Test-RoutingPac.js` and `tests/Test-NoSecrets.ps1`.
+- Any change to dashboard status detection must pass `tests/Test-MonitorSnapshot.ps1`.
 - Installation scripts must provide a reversible uninstall or restore path.
