@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "primaryProxy": {
+    "host": "127.0.0.1",
+    "port": 10809
+  },
+  "bulkProxy": {
+    "host": "127.0.0.1",
+    "port": 10818
+  },
+  "defaultDirectFallback": true,
+  "protectedDomains": [
+    "youtube.com",
+    "youtu.be",
+    "accounts.google.com",
+    "myaccount.google.com",
+    "googleapis.com",
+    "gstatic.com",
+    "gemini.google.com",
+    "aistudio.google.com",
+    "grok.com",
+    "x.ai",
+    "x.com",
+    "twitter.com",
+    "openai.com",
+    "chatgpt.com",
+    "anthropic.com",
+    "claude.ai",
+    "paypal.com",
+    "stripe.com"
+  ],
+  "bulkDomains": [
+    "googlevideo.com",
+    "ytimg.com",
+    "youtube-nocookie.com",
+    "nflxvideo.net",
+    "nflximg.net",
+    "nflxext.com",
+    "nflxso.net",
+    "ttvnw.net",
+    "jtvnw.net",
+    "twitchcdn.net",
+    "vimeocdn.com",
+    "tiktokcdn.com",
+    "tiktokcdn-us.com",
+    "byteoversea.com",
+    "ibytedtos.com",
+    "muscdn.com",
+    "release-assets.githubusercontent.com",
+    "objects.githubusercontent.com",
+    "github-releases.githubusercontent.com",
+    "dl.google.com",
+    "gvt1.com",
+    "gvt2.com",
+    "download.microsoft.com",
+    "download.windowsupdate.com",
+    "dl.delivery.mp.microsoft.com",
+    "speed.cloudflare.com"
+  ],
+  "health": {
+    "requirePrimaryProxy": true,
+    "requireHysteriaService": false,
+    "expectedBulkExit": "",
+    "checkUrl": "https://api.ipify.org",
+    "certificatePath": ""
+  }
+}

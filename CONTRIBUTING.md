@@ -12,6 +12,7 @@ Issues and pull requests are welcome.
 ```powershell
 .\tests\Test-PowerShellSyntax.ps1
 .\tests\Test-ConfigValidation.ps1
+.\tests\Test-SetupWizard.ps1
 .\scripts\New-RoutePilotPac.ps1 -ConfigPath .\config\routepilot.example.json
 node .\tests\Test-RoutingPac.js .\runtime\routepilot.pac .\config\routepilot.example.json
 .\scripts\Build-Service.ps1

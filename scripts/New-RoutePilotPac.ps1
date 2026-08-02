@@ -71,6 +71,14 @@ foreach ($domain in $bulkDomains) {
         throw "A domain cannot be both protected and bulk: $domain"
     }
 }
+foreach ($protectedDomain in $protectedDomains) {
+    foreach ($bulkDomain in $bulkDomains) {
+        if ($protectedDomain.EndsWith(".$bulkDomain", [StringComparison]::OrdinalIgnoreCase) -or
+            $bulkDomain.EndsWith(".$protectedDomain", [StringComparison]::OrdinalIgnoreCase)) {
+            throw "Protected and bulk domains cannot contain one another: $protectedDomain / $bulkDomain"
+        }
+    }
+}
 
 $protectedJson = ConvertTo-Json -InputObject ([object[]]$protectedDomains) -Compress
 $bulkJson = ConvertTo-Json -InputObject ([object[]]$bulkDomains) -Compress

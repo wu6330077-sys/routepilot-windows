@@ -6,12 +6,12 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 $selfPath = $MyInvocation.MyCommand.Path
 $forbiddenExtensions = @('.exe', '.dll', '.pdb', '.key', '.pem', '.pfx', '.crt')
 $forbiddenDirectories = @('secrets', 'runtime', 'state', 'reports', 'vendor', 'bin', 'obj')
-$textExtensions = @('.ps1', '.cs', '.js', '.json', '.yaml', '.yml', '.md', '.txt', '.pac', '.conf')
+$textExtensions = @('.ps1', '.cmd', '.bat', '.cs', '.js', '.json', '.yaml', '.yml', '.md', '.txt', '.pac', '.conf')
 $findings = @()
 
 $tracked = @()
 if (Test-Path -LiteralPath (Join-Path $projectRoot '.git')) {
-    $tracked = @(& git -C $projectRoot ls-files)
+    $tracked = @(& git -C $projectRoot ls-files --cached --others --exclude-standard)
 }
 if ($tracked.Count -eq 0) {
     $tracked = @(Get-ChildItem -LiteralPath $projectRoot -Recurse -File | Where-Object {

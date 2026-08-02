@@ -1,54 +1,107 @@
 # RoutePilot for Windows
 
-RoutePilot 是一个面向 Windows 的本地双出口策略路由工具。它让账号、登录和控制面域名固定走可信主代理，同时仅将明确列出的媒体 CDN 与大文件下载域名送往高速代理。
+> 让住宅线路负责出口一致性，让 VPS 线路负责大流量。
 
-项目适合已经合法拥有两个本地代理出口、希望获得可复现分流、健康检查、低权限后台服务和完整回滚能力的用户。RoutePilot 不提供代理服务器、节点凭据或第三方服务访问权限。
+## 这个项目到底能做什么？
 
-## 主要特性
+假设你有两条网络线路：
 
-- 受保护域名安全失败，不回落到直连或高速出口。
-- 只有白名单中的媒体/CDN 域名走高速出口。
-- PAC 以数据形式写入 Edge 用户级策略，不需要常驻 PAC Web 服务。
-- Hysteria 2 客户端可由低权限 `LocalService` Windows 服务托管并自动拉起。
-- 第三方程序只在用户主动执行时从官方 Release 下载，并校验官方 SHA-256。
-- 本地配置、凭据、日志、运行状态与二进制文件全部排除在 Git 之外。
-- 提供离线测试、健康检查和回滚脚本。
+- 住宅或可信线路：适合让账号流量保持固定出口，但速度较慢、按流量计费，或者套餐价格较高；
+- 高速 VPS 线路：带宽大、下载快，但你不希望账号登录和重要请求使用它。
 
-## 快速开始
+RoutePilot 会在 Microsoft Edge 中自动判断请求应该走哪条线路。账号页面和受保护域名走住宅线路，明确列出的视频 CDN、大文件下载走 VPS。你只需要照常使用一个浏览器，不用在看视频和登录账号之间反复切换节点。
 
-```powershell
-Copy-Item .\config\routepilot.example.json .\config\routepilot.local.json
-Copy-Item .\config\hysteria-client.example.yaml .\config\hysteria-client.local.yaml
-.\scripts\New-RoutePilotPac.ps1
-node .\tests\Test-RoutingPac.js .\runtime\routepilot.pac .\config\routepilot.local.json
+IP 地址本身不会限速。真正的瓶颈通常来自住宅代理套餐、家庭宽带、转发链路或流量额度。RoutePilot 不会把住宅线路“变快”，也不是把两条带宽叠加起来；它做的是把有限而重要的住宅流量留给合适的请求，把大流量搬到 VPS。
+
+## 一个最具体的例子
+
+你在 Edge 中打开 YouTube：
+
+1. YouTube 页面和 Google 账号请求走住宅线路。
+2. `googlevideo.com` 提供的视频文件走高速 VPS。
+3. 住宅线路断开时，受保护请求直接失败，不会偷偷回落到本地直连或 VPS。
+4. 如果高速线路由 RoutePilot 的 Hysteria 2 服务托管，客户端崩溃后可以自动重新启动。
+
+同样的思路也可以用于软件安装包、GitHub Release 和其他明确指定的大文件下载。
+
+## 我们自己的实测结果
+
+这个项目来自一套真实运行的双出口方案。2026-08-02，我们使用相同的 Cloudflare 5 MB 测试文件进行对照：
+
+| 测试方式 | 原住宅链路 | 最终高速链路 | 变化 |
+|---|---:|---:|---:|
+| 单连接中位速度 | 7.02 Mbps | 37.93 Mbps | 约 5.4 倍 |
+| 四路并发总速度 | 24.02 Mbps | 57.34 Mbps | 约 2.4 倍 |
+
+所以更准确的说法不是“从 7 MB/s 提升到 50 MB/s”，而是：**单连接从约 7 Mbps 提升到约 38 Mbps，四路并发最高测到约 57 Mbps**。`Mbps` 是兆比特每秒；换算成常见下载软件显示的 `MB/s`，需要除以 8。
+
+这些数据只是这套特定 VPS、住宅线路、网络环境和测试时间下的参考结果，不是速度承诺。完整测试条件、各阶段数据与结论见 [真实性能案例](docs/performance-case-study.zh-CN.md)。
+
+## 为什么会变快？
+
+用普通人的话说：原来所有车辆都要经过一条收费且拥堵的住宅小路；现在只有登录、账号等少量重要车辆走小路，装着视频和安装包的大货车改走 VPS 高速公路。
+
+技术上，RoutePilot 使用 PAC 按域名把浏览器请求分到两个本地 HTTP 代理。账号和页面域名经主代理走住宅/可信出口；视频 CDN 和下载域名经高速代理，使用 Hysteria 2（基于 UDP/QUIC）直达 VPS。提升主要来自**绕开住宅转发链路的带宽与流量瓶颈**，Hysteria 2 则改善高延迟或有丢包线路上的传输效率。它不是带宽叠加，也不会改变网站看到的两种出口属性。
+
+## 适合谁？
+
+你需要先拥有：
+
+- 一个连接住宅或可信出口的本地 HTTP 代理；
+- 一个连接高速 VPS 出口的本地 HTTP 代理；
+- Windows 10/11 和 Microsoft Edge。
+
+RoutePilot 不出售住宅 IP，不提供节点，不自动购买或创建账号，也不会替你搭建未经授权的远程服务器。它只负责协调你拥有或获准使用的两条线路。
+
+## 新手安装：双击一个文件
+
+先启动两条本地代理，然后直接双击：
+
+```text
+Start-Setup.cmd
 ```
 
-需要 Hysteria 2 高速出口时，先手动下载并校验官方程序：
+如果更喜欢使用 PowerShell，也可以在 RoutePilot 文件夹中运行：
 
 ```powershell
-.\scripts\Download-Hysteria.ps1
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\Setup-RoutePilot.ps1
 ```
 
-随后在管理员 PowerShell 中安装低权限服务：
+中英双语向导会自动完成：
 
-```powershell
-.\scripts\Install-HysteriaService.ps1 `
-  -HysteriaExecutable .\runtime\hysteria\hysteria-windows-amd64.exe `
-  -ClientConfig .\config\hysteria-client.local.yaml `
-  -DataRoot D:\RoutePilotData
-```
+1. 询问住宅线路和高速线路的本地端口；
+2. 使用内置的常见 AI/媒体分流预设生成本地配置；
+3. 检查配置并生成 PAC；
+4. 确认两个代理端口正在工作；
+5. 询问是否安装可以回滚的 Edge 分流策略。
 
-应用 Edge 分流并检查：
+新手流程不要求安装 Node.js，也不要求把项目放在特定磁盘。向导完成后重启 Edge 即可。
 
-```powershell
-.\scripts\Install-EdgeRouting.ps1
-.\scripts\Test-RoutePilotHealth.ps1
-```
+更详细的点击位置、检查方法、回滚步骤和常见错误见 [中文新手指南](docs/beginner-guide.zh-CN.md)。如果你还没有准备好 Hysteria 2 客户端，请阅读 [手动部署指南](docs/manual-install.md)。
 
-恢复原 Edge 策略：
+## 给专业用户的说明
+
+RoutePilot 是一个 Windows 本地、受保护域名安全失败的双出口策略路由工具。JSON 配置会生成 PAC，并以内嵌数据的形式写入当前用户的 Microsoft Edge 策略。受保护域名只返回主代理，高流量域名只返回高速代理。可选的 Hysteria 2 客户端使用 `LocalService`、独立服务 SID、受限 ACL、自动拉起、健康检查和可逆安装。
+
+### 安全与维护能力
+
+- 受保护域名不回落到直连或高速出口。
+- 只有明确列出的媒体/CDN 域名走高速出口。
+- 修改 Edge 前自动备份原策略。
+- 第三方程序只在用户主动执行时从官方 Release 下载并校验 SHA-256。
+- 本地配置、凭据、日志、运行状态和二进制文件不进入 Git。
+- CI 检查 PAC、非法配置、PowerShell 语法、服务编译和敏感信息。
+
+## 恢复原设置
 
 ```powershell
 .\scripts\Restore-EdgeRouting.ps1
 ```
 
-详细安全边界见 [安全模型](docs/security-model.md)。使用者应当只连接自己拥有或被授权管理的网络端点，并遵守当地法律及相关服务条款。
+移除可选的 Hysteria Windows 服务，但保留诊断数据：
+
+```powershell
+.\scripts\Uninstall-HysteriaService.ps1
+```
+
+详细原理见 [架构说明](docs/architecture.md)，安全边界见 [安全模型](docs/security-model.md)。使用者应当只连接自己拥有或被授权管理的网络端点，并遵守当地法律及相关服务条款。

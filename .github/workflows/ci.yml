@@ -21,6 +21,9 @@ jobs:
       - name: Validate rejected configurations
         shell: pwsh
         run: ./tests/Test-ConfigValidation.ps1
+      - name: Test beginner setup wizard
+        shell: pwsh
+        run: ./tests/Test-SetupWizard.ps1
       - name: Test PAC routing
         shell: pwsh
         run: node ./tests/Test-RoutingPac.js ./runtime/routepilot.pac ./config/routepilot.example.json

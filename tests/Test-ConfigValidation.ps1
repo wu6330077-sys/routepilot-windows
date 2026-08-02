@@ -35,11 +35,16 @@ try {
     $overlap.bulkDomains = @($overlap.bulkDomains) + @($overlap.protectedDomains[0])
     Assert-Rejected -Config $overlap -Name 'overlapping-domains'
 
+    $nestedOverlap = Get-Content -Raw -LiteralPath $example | ConvertFrom-Json
+    $nestedOverlap.protectedDomains = @('example.com')
+    $nestedOverlap.bulkDomains = @('download.example.com')
+    Assert-Rejected -Config $nestedOverlap -Name 'nested-overlapping-domains'
+
     $invalidDomain = Get-Content -Raw -LiteralPath $example | ConvertFrom-Json
     $invalidDomain.protectedDomains = @('not a domain')
     Assert-Rejected -Config $invalidDomain -Name 'invalid-domain'
 
-    Write-Output 'config_validation_tests=4'
+    Write-Output 'config_validation_tests=5'
     Write-Output 'status=ok'
 } finally {
     if (Test-Path -LiteralPath $testRoot) {
